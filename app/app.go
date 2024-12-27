@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"embed"
@@ -17,13 +17,18 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/gofiber/template/html/v2"
+	"github.com/pressly/goose/v3"
 	"github.com/rollbar/rollbar-go"
 
 	"github.com/vallieres/fg-market-onboarding/handler"
 	customtemplate "github.com/vallieres/fg-market-onboarding/internal/customTemplate"
+	"github.com/vallieres/fg-market-onboarding/internal/database"
 	"github.com/vallieres/fg-market-onboarding/routes"
 	"github.com/vallieres/fg-market-onboarding/services"
 )
+
+//go:embed db/*.sql
+var migrationsFS embed.FS
 
 //go:embed views/*
 var viewsFS embed.FS
@@ -31,8 +36,19 @@ var viewsFS embed.FS
 //go:embed public/*
 var publicFS embed.FS
 
-func main() {
+func Run() {
 	env := os.Getenv("FGONBOARDING_ENVIRONMENT")
+
+	// Setup Rollbar
+	rollbar.SetToken(os.Getenv("FGONBOARDING_ROLLBAR_TOKEN"))
+	rollbar.SetEnvironment(env)
+	rollbar.SetCodeVersion("main")
+	rollbar.SetServerRoot("github.com/vallieres/fg-market-onboarding")
+	rollbar.Wait()
+	if os.Getenv("FGONBOARDING_DISABLE_ROLLBAR") == "true" {
+		rollbar.SetEnabled(false)
+	}
+
 	environment := "local"
 	if len(env) > 0 {
 		environment = env
@@ -63,6 +79,29 @@ func main() {
 			return "static-id"
 		},
 	}))
+
+	db, err := database.MySQLConnection()
+	if err != nil {
+		errorDetails := fmt.Errorf("unable to connect to the database: %w", err)
+		rollbar.Error(errorDetails)
+		log.Fatal(errorDetails)
+	}
+
+	// Setup Goose Migrations
+	goose.SetBaseFS(migrationsFS)
+
+	// Update Database
+	if errSetDialect := goose.SetDialect("mysql"); errSetDialect != nil {
+		errorDetails := fmt.Errorf("unable to set database dialiect: %w", errSetDialect)
+		rollbar.Error(errorDetails)
+		panic(errSetDialect)
+	}
+
+	if errUp := goose.Up(db.DB, "db"); errUp != nil {
+		errorDetails := fmt.Errorf("unable upgrade migrationsFS: %w", errUp)
+		rollbar.Error(errorDetails)
+		panic(errorDetails)
+	}
 
 	shopifyAppToken := os.Getenv("FGONBOARDING_SHOPIFY_TOKEN")
 	shopifyStorefrontToken := os.Getenv("FGONBOARDING_SHOPIFY_STOREFRONT_TOKEN")

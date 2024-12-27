@@ -1,5 +1,6 @@
 DEFAULT_GOAL: help
 
+DBCONNECT := "fgonboard:fgonboard@/fgonboard?parseTime=true"
 
 ifneq (,$(wildcard ./.env))
 	include .env
@@ -17,9 +18,42 @@ install: ## Install required software
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
 	go install gotest.tools/gotestsum@latest
 	go install github.com/air-verse/air@latest
+	go install github.com/pressly/goose/v3/cmd/goose@latest
+
+.PHONY: up
+up: ## Starts the database
+	docker-compose up --detach
+	sleep 7
+	goose -dir ./app/db mysql $(DBCONNECT) up
+
+.PHONY: down
+down: ## Stops the database
+	docker-compose stop
+
+.PHONY: db-up
+db-up: ## Run migrations up to last version
+	goose -dir ./app/db mysql $(DBCONNECT) up
+
+.PHONY: db-status
+db-status: ## Shows which migration version we are at
+	goose -dir ./app/db mysql $(DBCONNECT) status
+
+.PHONY: db-down
+db-down: ## Run migrations down
+	goose -dir ./app/db mysql $(DBCONNECT) down
+
+.PHONY: db-add
+db-add: ## Add a new migration
+	@cd app/db; read -p "What is the new migration about (slug)?: " migname; \
+	goose create $$migname sql
+	@cd ..
 
 .PHONY: start
 start: ## Runs the service
+	docker-compose up --detach
+	sleep 15
+	goose -dir ./app/db mysql $(DBCONNECT) up
+#	export $(grep -v -e '^$' .env | grep -v -e '^#' | xargs -0)
 	air
 
 .PHONY: format
