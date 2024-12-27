@@ -1,0 +1,65 @@
+    <nav id="menu1" class="bar bar-2 hidden-xs bar--transparent bar--absolute" data-scroll-class='90vh:pos-fixed'>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2 text-center text-left-sm hidden-xs order-lg-2">
+                    <div class="bar__module">
+                        <a href="/app/public">
+                            <img class="logo logo-dark" alt="Hypr Social Logo" title="Hypr Social ❯ Take your link in bio to warp speed!" src="/img/logo-dark.png" />
+                            <img class="logo logo-light" alt="Hypr Social Logo" title="Hypr Social ❯ Take your link in bio to warp speed!" src="/img/logo-light.png" />
+                        </a>
+                    </div>
+                    <!--end module-->
+                </div>
+                <div class="col-lg-5 order-lg-1">
+                    <div class="bar__module">
+                        <ul class="menu-horizontal text-left">
+                            <li> <a href="/app/public">
+                                Home
+                            </a> </li>
+                            <li> <a href="/features">
+                                Features
+                            </a> </li>
+                            <li> <a href="/pricing">
+                                Pricing
+                            </a> </li>
+                            <li> <a href="/contact">
+                                Contact
+                            </a> </li>
+                        </ul>
+                    </div>
+                    <!--end module-->
+                </div>
+                <div class="col-lg-5 text-right text-left-xs text-left-sm order-lg-3">
+                    <div class="bar__module">
+                        {{ if .IsLogin }}
+                        <a class="btn btn--sm type--uppercase" href="/logout">
+                            <span class="btn__text">
+                                Logout
+                            </span>
+                        </a>
+                        <a class="btn btn--sm btn--primary type--uppercase" href="/dashboard">
+                            <span class="btn__text">
+                                My Account
+                            </span>
+                        </a>
+                        {{ else }}
+                        <a class="btn btn--sm type--uppercase" href="/login">
+                            <span class="btn__text">
+                                Login
+                            </span>
+                        </a>
+                        <a class="btn btn--sm btn--primary type--uppercase" href="/signup">
+                            <span class="btn__text">
+                                Create Account
+                            </span>
+                        </a>
+                        {{ end }}
+                    </div>
+                    <!--end module-->
+                </div>
+            </div>
+            <!--end of row-->
+        </div>
+        <!--end of container-->
+    </nav>
+    <!--end bar-->

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Onboarding ⋅ Furry Garden</title>
+    <meta name="description" content="Site Description Here">
+    <link href="/css/main.css" rel="stylesheet" type="text/css" media="all" />
+
+    {{template "partials/head-css" .}}
+</head>
+
+<body>
+<div class="nav-container login">
+
+    <div class="main-container">
+
+        <section class="height-100 imagebg text-center" data-overlay="4">
+            <div class="background-image-holder">
+                <img alt="background" src="https://images.unsplash.com/photo-1488998427799-e3362cec87c3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NzN8fGxvZ2lufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=900&q=60" />
+            </div>
+            <div class="container pos-vertical-center">
+                <div class="row">
+                    <div class="col-md-7 col-lg-5">
+                        <form action="/signup" method="POST">
+                            <h1 class="h3">Reset</h1>
+                            <p>Reset all the things</p>
+
+                            {{if .Message}}
+                            <div class="alert bg--success">
+                                <div class="alert__body">
+                                    <span>{{.Message}}</span>
+                                </div>
+                            </div>
+                            {{end}}
+
+                            {{if .ErrorMessage}}
+                            <div class="alert bg--error">
+                                <div class="alert__body">
+                                    <span>{{.ErrorMessage}}</span>
+                                </div>
+                            </div>
+                            {{end}}
+
+                        </form>
+
+                    </div>
+
+                </div>
+                <!--end of row-->
+            </div>
+            <!--end of container-->
+        </section>
+    </div>
+</div>
+{{template "partials/body-end" .}}
+</body>
+</html>
