@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Onboarding ⋅ Furry Garden</title>
-    <meta name="description" content="Site Description Here">
+    <title>Index ⋅ Furry Garden</title>
+    <meta name="description" content="Farmers Market customer onboarding">
     <link href="/css/main.css" rel="stylesheet" type="text/css" media="all" />
+    <meta name="robots" content="noindex, nofollow" />
 
     {{template "partials/head-css" .}}
 </head>
@@ -14,15 +15,13 @@
     <div class="main-container">
 
         <section class="height-100 imagebg text-center" data-overlay="4">
-            <div class="background-image-holder">
-                <img alt="background" src="https://images.unsplash.com/photo-1488998427799-e3362cec87c3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NzN8fGxvZ2lufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=900&q=60" />
-            </div>
+
             <div class="container pos-vertical-center">
                 <div class="row">
                     <div class="col-md-7 col-lg-5">
-                        <form action="/signup" method="POST">
-                            <h1 class="h3">Reset</h1>
-                            <p>Reset all the things</p>
+                        <form action="/onboard" method="POST">
+                            <h1 class="h3">Index</h1>
+                            <p>This is where all the fields are.</p>
 
                             {{if .Message}}
                             <div class="alert bg--success">
@@ -39,6 +38,33 @@
                                 </div>
                             </div>
                             {{end}}
+
+                            <label for="first_name">First Name:</label>
+                            <input type="text" name="first_name" id="first_name" value="{{.CustomerDetails.FirstName}}" /><br/>
+
+                            <label for="last_name">Last Name:</label>
+                            <input type="text" name="last_name" id="last_name" value="{{.CustomerDetails.LastName}}" /><br/>
+
+                            <label for="email">Email:</label>
+                            <input type="email" name="email" id="email" value="{{.CustomerDetails.Email}}" /><br/>
+
+                            <label for="dog_name">Dog Name:</label>
+                            <input type="text" name="dog_name" id="dog_name" value="{{.CustomerDetails.DogName}}" /><br/>
+
+                            <label for="dog_breed">Dog Breed:</label>
+                            <input type="text" name="dog_breed" id="dog_breed" value="{{.CustomerDetails.DogBreed}}" /><br/>
+
+                            <label for="dog_age">Dog Age:</label>
+                            <input type="number" name="dog_age" id="dog_age" value="{{.CustomerDetails.DogAge}}" /><br/>
+
+                            <label for="dog_weight">Weight (lbs):</label>
+                            <input type="number" name="dog_weight" id="dog_weight" value="{{.CustomerDetails.DogWeight}}" /><br/>
+
+                            <label for="dog_health_conditions">Health Condition(s):</label>
+                            <input type="text" name="dog_health_conditions" id="dog_health_conditions" value="{{.CustomerDetails.DogHealthConditions}}" /><br/>
+
+                            <br/><br/>
+                            <button>Next Page</button>
 
                         </form>
 

@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/vallieres/fg-market-onboarding/model"
 )
@@ -37,8 +39,25 @@ type GraphQLRequest struct {
 
 type ShopifyResponse struct {
 	Data struct {
-		CustomerCreate CustomerCreate `json:"customerCreate"`
+		CustomerCreate struct {
+			UserErrors []struct {
+				Field   []string `json:"field"`
+				Message string   `json:"message"`
+			} `json:"userErrors"`
+			Customer Customer `json:"customer"`
+		} `json:"customerCreate"`
 	} `json:"data"`
+	Extensions struct {
+		Cost struct {
+			RequestedQueryCost int `json:"requestedQueryCost"`
+			ActualQueryCost    int `json:"actualQueryCost"`
+			ThrottleStatus     struct {
+				MaximumAvailable   float64 `json:"maximumAvailable"`
+				CurrentlyAvailable int     `json:"currentlyAvailable"`
+				RestoreRate        float64 `json:"restoreRate"`
+			} `json:"throttleStatus"`
+		} `json:"cost"`
+	} `json:"extensions"`
 }
 
 type Address struct {
@@ -78,6 +97,7 @@ func NewCustomerService(adminAPIToken string, storefrontToken string) *CustomerS
 	}
 }
 
+//nolint:funlen
 func (c *CustomerService) Create(ctx context.Context, details model.OnboardPostBody) (string, error) {
 	query := `mutation customerCreate($input: CustomerInput!) {
 		customerCreate(input: $input) {
@@ -159,6 +179,10 @@ func (c *CustomerService) Create(ctx context.Context, details model.OnboardPostB
 		fmt.Printf("Error sending request: %v\n", errDo)
 		return "", errDo
 	}
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf("Error creating customer: %v\n", resp.Status)
+		return "", errors.New("error creating customer: " + resp.Status)
+	}
 	defer resp.Body.Close()
 
 	// Read response
@@ -169,9 +193,16 @@ func (c *CustomerService) Create(ctx context.Context, details model.OnboardPostB
 	}
 
 	var response ShopifyResponse
+	var errorList []string
 	if errUnMarsh := json.Unmarshal(body, &response); errUnMarsh != nil {
 		fmt.Printf("Error unmarshaling response: %v\n", errUnMarsh)
 		return "", errUnMarsh
+	}
+	if len(response.Data.CustomerCreate.UserErrors) > 0 {
+		for _, userError := range response.Data.CustomerCreate.UserErrors {
+			errorList = append(errorList, userError.Message)
+		}
+		return "", errors.New(strings.Join(errorList, "\n"))
 	}
 
 	return response.Data.CustomerCreate.Customer.Email, nil

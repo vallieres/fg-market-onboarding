@@ -33,6 +33,8 @@ func (r *Router) Init() error {
 		return errors.New("Router.Common needs to be set, cannot be nil")
 	}
 
+	r.Engine.Get("/", r.Public.HomeGET)
+
 	// Common Routes
 	subPublicFS, _ := fs.Sub(r.PublicFS, "public")
 	r.Engine.Use("/", filesystem.New(filesystem.Config{
@@ -57,16 +59,35 @@ func (r *Router) Init() error {
 		}
 		return c.Next()
 	})
+	r.Engine.Get("/img/*.jpg", func(c *fiber.Ctx) error {
+		c.Set(fiber.HeaderContentType, "image/jpeg")
+		if strings.Contains(rollbar.Environment(), "local") {
+			c.Set(fiber.HeaderCacheControl, "no-cache")
+		}
+		return c.Next()
+	})
+	r.Engine.Get("/img/*.gif", func(c *fiber.Ctx) error {
+		c.Set(fiber.HeaderContentType, "image/gif")
+		if strings.Contains(rollbar.Environment(), "local") {
+			c.Set(fiber.HeaderCacheControl, "no-cache")
+		}
+		return c.Next()
+	})
+	r.Engine.Get("/img/*.png", func(c *fiber.Ctx) error {
+		c.Set(fiber.HeaderContentType, "image/png")
+		if strings.Contains(rollbar.Environment(), "local") {
+			c.Set(fiber.HeaderCacheControl, "no-cache")
+		}
+		return c.Next()
+	})
 
 	r.Engine.Get("/health-check", r.Common.HealthCheck)
 
 	// Public Routes
 	r.Engine.Post("/onboard", r.Public.OnboardPOST)
 	r.Engine.Get("/onboard", r.Public.OnboardGET)
+	r.Engine.Get("/plan-result", r.Public.PlanResultGET)
 	r.Engine.Get("/reset", r.Public.ResetGET)
-
-	// Redirect to marketing website
-	r.Engine.Get("/", r.Public.HomeGET)
 
 	r.Engine.Use(
 		func(c *fiber.Ctx) error {

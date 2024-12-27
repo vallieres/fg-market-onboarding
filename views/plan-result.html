@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Custom Plan ⋅ Furry Garden</title>
+    <meta name="description" content="Farmers Market customer onboarding">
+    <link href="/css/main.css" rel="stylesheet" type="text/css" media="all" />
+    <meta name="robots" content="noindex, nofollow" />
+
+    {{template "partials/head-css" .}}
+</head>
+
+<body>
+<div class="nav-container login">
+
+    <div class="main-container">
+
+        <section class="height-100 imagebg text-center" data-overlay="4">
+
+            <div class="container pos-vertical-center">
+                <div class="row">
+                    <div class="col-md-7 col-lg-5">
+                        <form action="/onboard" method="POST">
+                            <h1 class="h3">Plan presentation</h1>
+                            <p>This is customized plan for {{.CustomerDetails.DogName}}.</p>
+
+                            {{if .Message}}
+                            <div class="alert bg--success">
+                                <div class="alert__body">
+                                    <span>{{.Message}}</span>
+                                </div>
+                            </div>
+                            {{end}}
+
+                            {{if .ErrorMessage}}
+                            <div class="alert bg--error">
+                                <div class="alert__body">
+                                    <span>{{.ErrorMessage}}</span>
+                                </div>
+                            </div>
+                            {{end}}
+
+                            Plan details goes here.
+
+                        </form>
+
+                    </div>
+
+                </div>
+                <!--end of row-->
+            </div>
+            <!--end of container-->
+        </section>
+    </div>
+</div>
+{{template "partials/body-end" .}}
+</body>
+</html>

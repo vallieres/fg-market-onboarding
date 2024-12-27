@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/rollbar/rollbar-go"
@@ -23,6 +22,15 @@ func (v1 *PublicHandlers) OnboardGET(c *fiber.Ctx) error {
 	return c.Render("index", fiber.Map{})
 }
 
+func (v1 *PublicHandlers) PlanResultGET(c *fiber.Ctx) error {
+	// TODO Retrieve plan details
+
+	// and pass it to the render
+	return c.Render("plan-result", fiber.Map{
+		"PlanDetails": nil,
+	})
+}
+
 func (v1 *PublicHandlers) OnboardPOST(c *fiber.Ctx) error {
 	var customerDetails model.OnboardPostBody
 
@@ -36,29 +44,26 @@ func (v1 *PublicHandlers) OnboardPOST(c *fiber.Ctx) error {
 	// validation
 	if err := customerDetails.Validate(); err != nil {
 		rollbar.Warning("Unable to create user : ", err)
-		return c.Render("signup", fiber.Map{
-			"ErrorMessage": err.Error(),
+		return c.Render("index", fiber.Map{
+			"ErrorMessage":    err.Error(),
+			"CustomerDetails": customerDetails,
 		})
 	}
 
-	userEmail, errCreate := v1.CustomerService.Create(ctx, customerDetails)
+	_, errCreate := v1.CustomerService.Create(ctx, customerDetails)
 	if errCreate != nil {
 		rollbar.Error("Unable to create user : ", errCreate.Error())
-		return c.Render("signup", fiber.Map{
-			"ErrorMessage": "Unable to Create User : " + errCreate.Error(),
-		})
-	}
-	if userEmail != "" {
-		rollbar.Warning("User Already Exists, UserID: " + strconv.FormatInt(0, 10))
-		return c.Render("signup", fiber.Map{
-			"ErrorMessage": "User already exists, please login instead.",
+		return c.Render("index", fiber.Map{
+			"ErrorMessage":    "Unable to Create User : " + errCreate.Error(),
+			"CustomerDetails": customerDetails,
 		})
 	}
 
-	redirectTo := ""
+	domain := os.Getenv("FGONBOARDING_DOMAIN")
+	redirectTo := fmt.Sprintf("https://%s/plan-result", domain)
 
-	return c.Render("index", fiber.Map{
-		"Message":    "You have successfully signed up! Check your email for the verification link and then login below!",
+	return c.Render("plan", fiber.Map{
+		"Message":    "Preparing plan for " + customerDetails.DogName + "...",
 		"RedirectTo": redirectTo,
 	})
 }
