@@ -23,6 +23,8 @@ func (v1 *PublicHandlers) OnboardGET(c *fiber.Ctx) error {
 }
 
 func (v1 *PublicHandlers) PlanResultGET(c *fiber.Ctx) error {
+	fmt.Fprintf(c, "%s\n", c.Params("planID"))
+
 	// TODO Retrieve plan details
 
 	// TODO Create Cart and generate URL
@@ -63,7 +65,7 @@ func (v1 *PublicHandlers) OnboardPOST(c *fiber.Ctx) error {
 	}
 
 	domain := os.Getenv("FGONBOARDING_DOMAIN")
-	redirectTo := fmt.Sprintf("https://%s/plan-result", domain)
+	redirectTo := fmt.Sprintf("https://%s/plan-result/%s", domain, "unique-plan-id")
 
 	return c.Render("plan", fiber.Map{
 		"Message":    "Preparing plan for " + customerDetails.DogName + "...",

@@ -86,7 +86,7 @@ func (r *Router) Init() error {
 	// Public Routes
 	r.Engine.Post("/onboard", r.Public.OnboardPOST)
 	r.Engine.Get("/onboard", r.Public.OnboardGET)
-	r.Engine.Get("/plan-result", r.Public.PlanResultGET)
+	r.Engine.Get("/plan-result/:planID", r.Public.PlanResultGET)
 	r.Engine.Get("/reset", r.Public.ResetGET)
 
 	r.Engine.Use(

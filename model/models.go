@@ -9,6 +9,7 @@ type OnboardPostBody struct {
 	FirstName           string `json:"first_name" form:"first_name"`
 	LastName            string `json:"last_name" form:"last_name"`
 	Email               string `json:"email" form:"email"`
+	ZipCode             string `json:"zip_code" form:"zip_code"`
 	DogName             string `json:"dog_name" form:"dog_name"`
 	DogBreed            string `json:"dog_breed" form:"dog_breed"`
 	DogAge              int    `json:"dog_age" form:"dog_age"`

@@ -25,11 +25,28 @@ type MarketingConsent struct {
 	MarketingState      string `json:"marketingState"`
 }
 
+type Metafield struct {
+	Value     string `json:"value"`
+	Namespace string `json:"namespace"`
+	Key       string `json:"key"`
+	Type      string `json:"type"`
+}
+
 type CustomerInput struct {
 	Email                 string           `json:"email"`
 	FirstName             string           `json:"firstName"`
 	LastName              string           `json:"lastName"`
+	ZipCode               string           `json:"zipCode"`
 	EmailMarketingConsent MarketingConsent `json:"emailMarketingConsent"`
+	Metafields            Metafield        `json:"metafields"`
+}
+
+type CustomerDogMetafields struct {
+	Name             string `json:"name"`
+	Breed            string `json:"breed"`
+	Age              int    `json:"age"`
+	WeightLbs        int    `json:"weight_lbs"`
+	HealthConditions string `json:"health_conditions"`
 }
 
 type GraphQLRequest struct {
@@ -100,55 +117,81 @@ func NewCustomerService(adminAPIToken string, storefrontToken string) *CustomerS
 //nolint:funlen
 func (c *CustomerService) Create(ctx context.Context, details model.OnboardPostBody) (string, error) {
 	query := `mutation customerCreate($input: CustomerInput!) {
-		customerCreate(input: $input) {
-			userErrors {
-				field
-				message
-			}
-			customer {
-				id
-				email
-				phone
-				taxExempt
-				emailMarketingConsent {
-					marketingState
-					marketingOptInLevel
-					consentUpdatedAt
+				  customerCreate(input: $input) {
+					userErrors {
+					  field
+					  message
+					}
+					customer {
+					  id
+					  email
+					  metafields(first: 10) {
+						edges {
+						  node {
+							key
+							namespace
+							value
+						  }
+						}
+					  }
+					  phone
+					  emailMarketingConsent {
+						marketingState
+						marketingOptInLevel
+						consentUpdatedAt
+					  }
+					  firstName
+					  lastName
+					  smsMarketingConsent {
+						marketingState
+						marketingOptInLevel
+					  }
+					  addresses {
+						country
+						zip
+					  }
+					}
+				  }
 				}
-				firstName
-				lastName
-				amountSpent {
-					amount
-					currencyCode
-				}
-				smsMarketingConsent {
-					marketingState
-					marketingOptInLevel
-				}
-				addresses {
-					address1
-					city
-					country
-					phone
-					zip
-				}
-			}
-		}
-	}`
+`
 
 	subscribed := "SUBSCRIBED"
 	if !details.MailingList {
 		subscribed = "NOT_SUBSCRIBED"
 	}
 
+	// Build Metafields JSON
+	metafields := []CustomerDogMetafields{{
+		Name:             details.DogName,
+		Breed:            details.DogBreed,
+		Age:              details.DogAge,
+		WeightLbs:        details.DogWeight,
+		HealthConditions: details.DogHealthConditions,
+	}}
+	metafieldsJSON, errMarshalMeta := json.Marshal(metafields)
+	if errMarshalMeta != nil {
+		fmt.Println("Error marshalling Metafields to JSON:", errMarshalMeta)
+		return "", errMarshalMeta
+	}
+
+	// Convert to string for display
+	metafieldsJSONString := string(metafieldsJSON)
+
 	// Create request payload
 	input := CustomerInput{
 		Email:     details.Email,
 		FirstName: details.FirstName,
 		LastName:  details.LastName,
+		ZipCode:   details.ZipCode,
 		EmailMarketingConsent: MarketingConsent{
 			MarketingOptInLevel: "SINGLE_OPT_IN",
 			MarketingState:      subscribed,
+		},
+		Metafields: Metafield{
+			Namespace: "custom",
+			Type:      "json",
+			Key:       "dogs",
+			Value:     metafieldsJSONString,
 		},
 	}
 

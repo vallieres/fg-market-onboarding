@@ -47,6 +47,9 @@
 
                             <label for="email">Email:</label>
                             <input type="email" name="email" id="email" value="{{.CustomerDetails.Email}}" /><br/>
+
+                            <label for="zip_code">Zip Code:</label>
+                            <input type="text" name="zip_code" id="zip_code" value="{{.CustomerDetails.ZipCode}}" /><br/>
                             <br />
 
                             <label for="dog_name">Dog Name:</label>
@@ -65,7 +68,7 @@
                             <input type="text" name="dog_health_conditions" id="dog_health_conditions" value="{{.CustomerDetails.DogHealthConditions}}" /><br/>
 
                             <label for="mailing_list">Subscribe to Emails:</label>
-                            <input type="checkbox" name="mailing_list" id="mailing_list" value="{{.CustomerDetails.MailingList}}" /><br/>
+                            <input type="checkbox" name="mailing_list" id="mailing_list" {{ if .CustomerDetails.MailingList }}checked{{ end }} /><br/>
 
 
                             <br/><br/>
