@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/vallieres/fg-market-onboarding/repository"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/helmet"
@@ -36,6 +38,7 @@ var viewsFS embed.FS
 //go:embed public/*
 var publicFS embed.FS
 
+//nolint:funlen
 func Run() {
 	env := os.Getenv("FGONBOARDING_ENVIRONMENT")
 
@@ -106,8 +109,11 @@ func Run() {
 	shopifyAppToken := os.Getenv("FGONBOARDING_SHOPIFY_TOKEN")
 	shopifyStorefrontToken := os.Getenv("FGONBOARDING_SHOPIFY_STOREFRONT_TOKEN")
 
+	zipCodeRepository := repository.NewZipCodeRepository(db)
+
 	rateLimiterService := services.NewRateLimiterService()
 	customerService := services.NewCustomerService(shopifyAppToken, shopifyStorefrontToken)
+	zipCodeService := services.NewZipCodeService(zipCodeRepository)
 
 	app.Use(limiter.New(limiter.Config{
 		Max:                    30, //nolint:mnd
@@ -124,6 +130,7 @@ func Run() {
 		Engine: app,
 		Public: &handler.PublicHandlers{
 			CustomerService: *customerService,
+			ZipCodeService:  *zipCodeService,
 		},
 		Common:   &handler.CommonHandlers{},
 		PublicFS: publicFS,

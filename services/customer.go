@@ -15,11 +15,6 @@ import (
 
 const ShopifyURL = "https://fg-test-one.myshopify.com"
 
-type CustomerService struct {
-	shopifyAppToken        string
-	shopifyStorefrontToken string
-}
-
 type MarketingConsent struct {
 	MarketingOptInLevel string `json:"marketingOptInLevel"`
 	MarketingState      string `json:"marketingState"`
@@ -105,6 +100,11 @@ type UserError struct {
 type CustomerCreate struct {
 	UserErrors []UserError `json:"userErrors"`
 	Customer   Customer    `json:"customer"`
+}
+
+type CustomerService struct {
+	shopifyAppToken        string
+	shopifyStorefrontToken string
 }
 
 func NewCustomerService(adminAPIToken string, storefrontToken string) *CustomerService {

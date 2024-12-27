@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 )
@@ -27,4 +29,13 @@ func (r OnboardPostBody) Validate() error {
 		validation.Field(&r.DogBreed, validation.Required),
 		validation.Field(&r.DogAge, validation.Required),
 	)
+}
+
+type ZipCodeEntry struct {
+	ZipCode   string     `json:"zipcode" db:"zipcode"`
+	City      string     `json:"city" db:"city"`
+	State     string     `json:"state" db:"state"`
+	CreatedAt time.Time  `json:"created_at" db:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at" db:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
 }

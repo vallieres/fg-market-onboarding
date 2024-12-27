@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -87,4 +88,16 @@ func (v1 *PublicHandlers) HomeGET(c *fiber.Ctx) error {
 	}
 
 	return c.Redirect(redirectTo)
+}
+
+func (v1 *PublicHandlers) CitiesGET(c *fiber.Ctx) error {
+	cities, errGetCities := v1.ZipCodeService.GetCityByZipCode(c.Params("zipCode"))
+	if errGetCities != nil {
+		return c.Status(http.StatusOK).JSON(fiber.Map{
+			"cities": cities,
+		})
+	}
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"cities": cities,
+	})
 }

@@ -9,6 +9,7 @@ import (
 // Handlers connecting all the controllers.
 type Handlers struct {
 	CustomerService services.CustomerService
+	ZipCodeService  services.ZipCodeService
 }
 
 type (

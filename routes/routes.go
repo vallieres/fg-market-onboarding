@@ -89,6 +89,9 @@ func (r *Router) Init() error {
 	r.Engine.Get("/plan-result/:planID", r.Public.PlanResultGET)
 	r.Engine.Get("/reset", r.Public.ResetGET)
 
+	// REST Calls
+	r.Engine.Get("/rest/cities/:zipCode", r.Public.CitiesGET)
+
 	r.Engine.Use(
 		func(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusNotFound).SendString("Page not found")
