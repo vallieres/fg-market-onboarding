@@ -14,6 +14,7 @@ type OnboardPostBody struct {
 	DogAge              int    `json:"dog_age" form:"dog_age"`
 	DogWeight           int    `json:"dog_weight" form:"dog_weight"`
 	DogHealthConditions string `json:"dog_health_conditions" form:"dog_health_conditions"`
+	MailingList         bool   `json:"mailing_list" form:"mailing_list"`
 }
 
 func (r OnboardPostBody) Validate() error {

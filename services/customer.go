@@ -136,14 +136,19 @@ func (c *CustomerService) Create(ctx context.Context, details model.OnboardPostB
 		}
 	}`
 
+	subscribed := "SUBSCRIBED"
+	if !details.MailingList {
+		subscribed = "NOT_SUBSCRIBED"
+	}
+
 	// Create request payload
 	input := CustomerInput{
 		Email:     details.Email,
 		FirstName: details.FirstName,
 		LastName:  details.LastName,
 		EmailMarketingConsent: MarketingConsent{
-			MarketingOptInLevel: "CONFIRMED_OPT_IN",
-			MarketingState:      "SUBSCRIBED",
+			MarketingOptInLevel: "SINGLE_OPT_IN",
+			MarketingState:      subscribed,
 		},
 	}
 

@@ -25,9 +25,12 @@ func (v1 *PublicHandlers) OnboardGET(c *fiber.Ctx) error {
 func (v1 *PublicHandlers) PlanResultGET(c *fiber.Ctx) error {
 	// TODO Retrieve plan details
 
+	// TODO Create Cart and generate URL
+
 	// and pass it to the render
 	return c.Render("plan-result", fiber.Map{
 		"PlanDetails": nil,
+		"CheckoutURL": "",
 	})
 }
 

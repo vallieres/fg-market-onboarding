@@ -47,6 +47,7 @@
 
                             <label for="email">Email:</label>
                             <input type="email" name="email" id="email" value="{{.CustomerDetails.Email}}" /><br/>
+                            <br />
 
                             <label for="dog_name">Dog Name:</label>
                             <input type="text" name="dog_name" id="dog_name" value="{{.CustomerDetails.DogName}}" /><br/>
@@ -62,6 +63,10 @@
 
                             <label for="dog_health_conditions">Health Condition(s):</label>
                             <input type="text" name="dog_health_conditions" id="dog_health_conditions" value="{{.CustomerDetails.DogHealthConditions}}" /><br/>
+
+                            <label for="mailing_list">Subscribe to Emails:</label>
+                            <input type="checkbox" name="mailing_list" id="mailing_list" value="{{.CustomerDetails.MailingList}}" /><br/>
+
 
                             <br/><br/>
                             <button>Next Page</button>
