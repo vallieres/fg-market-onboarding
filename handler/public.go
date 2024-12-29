@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/rollbar/rollbar-go"
@@ -93,8 +94,14 @@ func (v1 *PublicHandlers) HomeGET(c *fiber.Ctx) error {
 func (v1 *PublicHandlers) CitiesGET(c *fiber.Ctx) error {
 	cities, errGetCities := v1.ZipCodeService.GetCityByZipCode(c.Params("zipCode"))
 	if errGetCities != nil {
-		return c.Status(http.StatusOK).JSON(fiber.Map{
-			"cities": cities,
+		if strings.Contains(errGetCities.Error(), "no zip code entries found") {
+			return c.Status(http.StatusNotFound).JSON(fiber.Map{
+				"error": "no zip code entries found",
+			})
+		}
+		rollbar.Error(fmt.Errorf("error pulling cities for zip code: %s, %w", c.Params("zipCode"), errGetCities))
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": "error pulling cities for zip code",
 		})
 	}
 	return c.Status(http.StatusOK).JSON(fiber.Map{
