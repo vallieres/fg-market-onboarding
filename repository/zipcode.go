@@ -1,3 +1,5 @@
+// Package repository takes care of working with different data sources.
+// For the Zip Codes, the source for the data is https://postalpro.usps.com/ZIP_Locale_Detail
 package repository
 
 import (
