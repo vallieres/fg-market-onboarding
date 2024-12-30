@@ -31,17 +31,18 @@ type CustomerInput struct {
 	Email                 string           `json:"email"`
 	FirstName             string           `json:"firstName"`
 	LastName              string           `json:"lastName"`
-	ZipCode               string           `json:"zipCode"`
+	Addresses             []Address        `json:"addresses"`
 	EmailMarketingConsent MarketingConsent `json:"emailMarketingConsent"`
 	Metafields            Metafield        `json:"metafields"`
 }
 
 type CustomerDogMetafields struct {
-	Name             string `json:"name"`
-	Breed            string `json:"breed"`
-	Age              int    `json:"age"`
-	WeightLbs        int    `json:"weight_lbs"`
-	HealthConditions string `json:"health_conditions"`
+	Name             string  `json:"name"`
+	Species          string  `json:"species"`
+	Breed            string  `json:"breed"`
+	Age              float64 `json:"age"`
+	WeightLbs        int     `json:"weight_lbs"`
+	HealthConditions string  `json:"health_conditions"`
 }
 
 type GraphQLRequest struct {
@@ -73,11 +74,11 @@ type ShopifyResponse struct {
 }
 
 type Address struct {
-	Address1 string `json:"address1"`
-	City     string `json:"city"`
-	Country  string `json:"country"`
-	Phone    string `json:"phone"`
-	Zip      string `json:"zip"`
+	Address1 string `json:"address1,omitempty"`
+	City     string `json:"city,omitempty"`
+	Country  string `json:"country,omitempty"`
+	Phone    string `json:"phone,omitempty"`
+	Zip      string `json:"zip,omitempty"`
 }
 
 type Customer struct {
@@ -162,11 +163,12 @@ func (c *CustomerService) Create(ctx context.Context, details model.OnboardPostB
 
 	// Build Metafields JSON
 	metafields := []CustomerDogMetafields{{
-		Name:             details.DogName,
-		Breed:            details.DogBreed,
-		Age:              details.DogAge,
-		WeightLbs:        details.DogWeight,
-		HealthConditions: details.DogHealthConditions,
+		Name:             details.PetName,
+		Species:          details.PetSpecies,
+		Breed:            details.PetBreed,
+		Age:              details.PetAge,
+		WeightLbs:        details.PetWeight,
+		HealthConditions: details.PetHealthConditions,
 	}}
 	metafieldsJSON, errMarshalMeta := json.Marshal(metafields)
 	if errMarshalMeta != nil {
@@ -178,11 +180,15 @@ func (c *CustomerService) Create(ctx context.Context, details model.OnboardPostB
 	metafieldsJSONString := string(metafieldsJSON)
 
 	// Create request payload
+	addresses := []Address{{
+		Zip:     details.ZipCode,
+		Country: details.Country,
+	}}
 	input := CustomerInput{
 		Email:     details.Email,
 		FirstName: details.FirstName,
 		LastName:  details.LastName,
-		ZipCode:   details.ZipCode,
+		Addresses: addresses,
 		EmailMarketingConsent: MarketingConsent{
 			MarketingOptInLevel: "SINGLE_OPT_IN",
 			MarketingState:      subscribed,
@@ -190,7 +196,7 @@ func (c *CustomerService) Create(ctx context.Context, details model.OnboardPostB
 		Metafields: Metafield{
 			Namespace: "custom",
 			Type:      "json",
-			Key:       "dogs",
+			Key:       "animals",
 			Value:     metafieldsJSONString,
 		},
 	}
