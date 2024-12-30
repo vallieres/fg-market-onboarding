@@ -90,7 +90,9 @@ func (r *Router) Init() error {
 	r.Engine.Get("/reset", r.Public.ResetGET)
 
 	// REST Calls
-	r.Engine.Get("/rest/cities/:zipCode", r.Public.CitiesGET)
+	r.Engine.Get("/rest/cities/:zipCode", r.Public.RESTCitiesGET)
+	r.Engine.Get("/rest/test", r.Public.RESTTestGET)
+	r.Engine.Get("/rest/plans/:email", r.Public.RESTPlansGET)
 
 	r.Engine.Use(
 		func(c *fiber.Ctx) error {

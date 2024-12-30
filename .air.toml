@@ -5,7 +5,7 @@ tmp_dir = "tmp"
 [build]
   args_bin = []
   bin = "./bin/fgonboarding"
-  cmd = "go build -o ./bin/fgonboarding main.go"
+  cmd = "go build -o ./bin/fgonboarding cmd/server/main.go"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata"]
   exclude_file = []

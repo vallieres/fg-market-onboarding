@@ -29,6 +29,20 @@ make start
 
 Visit [https://market.furrygarden.io/login](https://market.furrygarden.io)
 
+## Using the Tunnel
+
+To allow Shopify to proxy the `/rest` API endpoints, run this command:
+
+```shell
+make start-tunnel
+```
+
+And make sure the _App Configuration_ uses that `serveo.net` URL here:
+[https://partners.shopify.com/3017671/apps/200369307649/edit](https://partners.shopify.com/3017671/apps/200369307649/edit)
+
+Update `Proxy URL` with the serveo URL like so:
+`https://f316e6c145b889d21a521452dc045921.serveo.net`
+
 ## Crontab
 
 ### FG Onboarding App

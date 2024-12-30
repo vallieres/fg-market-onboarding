@@ -271,6 +271,7 @@ fabric.properties
 
 certs/
 .ignore/
+bin/
 localhost.crt
 localhost.csr
 localhost.key
