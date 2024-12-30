@@ -45,7 +45,10 @@ func (v1 *PublicHandlers) OnboardPOST(c *fiber.Ctx) error {
 
 	errParse := c.BodyParser(&customerDetails)
 	if errParse != nil {
-		return ShowErrorPage(c, errParse.Error())
+		return c.Render("index", fiber.Map{
+			"ErrorMessage":    errParse.Error(),
+			"CustomerDetails": customerDetails,
+		})
 	}
 
 	// validation
@@ -70,7 +73,7 @@ func (v1 *PublicHandlers) OnboardPOST(c *fiber.Ctx) error {
 	redirectTo := fmt.Sprintf("https://%s/plan-result/%s", domain, "unique-plan-id")
 
 	return c.Render("plan", fiber.Map{
-		"Message":    "Preparing plan for " + customerDetails.DogName + "...",
+		"Message":    "Preparing plan for " + customerDetails.PetName + "...",
 		"RedirectTo": redirectTo,
 	})
 }

@@ -43,7 +43,7 @@ SELECT zipcode, city, state
 		return nil, err
 	}
 
-	// ZipCode NOT found
+	// Zip NOT found
 	if len(entries) == 0 {
 		return entries, errors.New("no zip code entries found")
 	}

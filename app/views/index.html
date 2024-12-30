@@ -52,20 +52,23 @@
                             <input type="text" name="zip_code" id="zip_code" value="{{.CustomerDetails.ZipCode}}" /><br/>
                             <br />
 
-                            <label for="dog_name">Dog Name:</label>
-                            <input type="text" name="dog_name" id="dog_name" value="{{.CustomerDetails.DogName}}" /><br/>
+                            <label for="pet_species">Pet Species:</label>
+                            <input type="text" name="pet_species" id="pet_species" value="{{.CustomerDetails.PetSpecies}}" /><br/>
 
-                            <label for="dog_breed">Dog Breed:</label>
-                            <input type="text" name="dog_breed" id="dog_breed" value="{{.CustomerDetails.DogBreed}}" /><br/>
+                            <label for="pet_name">Pet Name:</label>
+                            <input type="text" name="pet_name" id="pet_name" value="{{.CustomerDetails.PetName}}" /><br/>
 
-                            <label for="dog_age">Dog Age:</label>
-                            <input type="number" name="dog_age" id="dog_age" value="{{.CustomerDetails.DogAge}}" /><br/>
+                            <label for="pet_breed">Pet Breed:</label>
+                            <input type="text" name="pet_breed" id="pet_breed" value="{{.CustomerDetails.PetBreed}}" /><br/>
 
-                            <label for="dog_weight">Weight (lbs):</label>
-                            <input type="number" name="dog_weight" id="dog_weight" value="{{.CustomerDetails.DogWeight}}" /><br/>
+                            <label for="pet_age">Pet Age:</label>
+                            <input type="number" step="0.1" name="pet_age" id="pet_age" value="{{.CustomerDetails.PetAge}}" /><br/>
 
-                            <label for="dog_health_conditions">Health Condition(s):</label>
-                            <input type="text" name="dog_health_conditions" id="dog_health_conditions" value="{{.CustomerDetails.DogHealthConditions}}" /><br/>
+                            <label for="pet_weight">Weight (lbs):</label>
+                            <input type="number" step="0.01" name="pet_weight" id="pet_weight" value="{{.CustomerDetails.PetWeight}}" /><br/>
+
+                            <label for="pet_health_conditions">Health Condition(s):</label>
+                            <input type="text" name="pet_health_conditions" id="pet_health_conditions" value="{{.CustomerDetails.PetHealthConditions}}" /><br/>
 
                             <label for="mailing_list">Subscribe to Emails:</label>
                             <input type="checkbox" name="mailing_list" id="mailing_list" {{ if .CustomerDetails.MailingList }}checked{{ end }} /><br/>

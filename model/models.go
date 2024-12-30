@@ -8,16 +8,18 @@ import (
 )
 
 type OnboardPostBody struct {
-	FirstName           string `json:"first_name" form:"first_name"`
-	LastName            string `json:"last_name" form:"last_name"`
-	Email               string `json:"email" form:"email"`
-	ZipCode             string `json:"zip_code" form:"zip_code"`
-	DogName             string `json:"dog_name" form:"dog_name"`
-	DogBreed            string `json:"dog_breed" form:"dog_breed"`
-	DogAge              int    `json:"dog_age" form:"dog_age"`
-	DogWeight           int    `json:"dog_weight" form:"dog_weight"`
-	DogHealthConditions string `json:"dog_health_conditions" form:"dog_health_conditions"`
-	MailingList         bool   `json:"mailing_list" form:"mailing_list"`
+	FirstName           string  `json:"first_name" form:"first_name"`
+	LastName            string  `json:"last_name" form:"last_name"`
+	Email               string  `json:"email" form:"email"`
+	ZipCode             string  `json:"zip_code" form:"zip_code"`
+	Country             string  `json:"country" form:"country"`
+	PetName             string  `json:"pet_name" form:"pet_name"`
+	PetSpecies          string  `json:"pet_species" form:"pet_species"`
+	PetBreed            string  `json:"pet_breed" form:"pet_breed"`
+	PetAge              float64 `json:"pet_age" form:"pet_age"`
+	PetWeight           int     `json:"pet_weight" form:"pet_weight"`
+	PetHealthConditions string  `json:"pet_health_conditions" form:"pet_health_conditions"`
+	MailingList         bool    `json:"mailing_list" form:"mailing_list"`
 }
 
 func (r OnboardPostBody) Validate() error {
@@ -25,9 +27,8 @@ func (r OnboardPostBody) Validate() error {
 		validation.Field(&r.FirstName, validation.Required),
 		validation.Field(&r.LastName, validation.Required),
 		validation.Field(&r.Email, validation.Required, is.Email),
-		validation.Field(&r.DogName, validation.Required),
-		validation.Field(&r.DogBreed, validation.Required),
-		validation.Field(&r.DogAge, validation.Required),
+		validation.Field(&r.PetName, validation.Required),
+		validation.Field(&r.PetSpecies, validation.Required),
 	)
 }
 
