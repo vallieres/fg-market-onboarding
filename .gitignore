@@ -270,10 +270,11 @@ fabric.properties
 ### Local HTTPS Stuff
 
 certs/
+.ignore/
 localhost.crt
 localhost.csr
 localhost.key
-localhyperlinkco.crt
-localhyperlinkco.csr
-localhyperlinkco.key
 .dccache
+market.furrygarden.io-key.pem
+market.furrygarden.io.pem
+api-requests.paw
