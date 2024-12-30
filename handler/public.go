@@ -83,6 +83,11 @@ func (v1 *PublicHandlers) ResetGET(c *fiber.Ctx) error {
 }
 
 func (v1 *PublicHandlers) HomeGET(c *fiber.Ctx) error {
+	return c.Render("index", fiber.Map{
+		"Title": "Home | ",
+	})
+	/**
+	* This was used before, probably not needed anymore.
 	domain := os.Getenv("FGONBOARDING_DOMAIN")
 	redirectTo := fmt.Sprintf("https://%s/", domain)
 	if os.Getenv("FGONBOARDING_ENVIRONMENT") == EnvLocal {
@@ -92,9 +97,10 @@ func (v1 *PublicHandlers) HomeGET(c *fiber.Ctx) error {
 	}
 
 	return c.Redirect(redirectTo)
+	**/
 }
 
-func (v1 *PublicHandlers) CitiesGET(c *fiber.Ctx) error {
+func (v1 *PublicHandlers) RESTCitiesGET(c *fiber.Ctx) error {
 	cities, errGetCities := v1.ZipCodeService.GetCityByZipCode(c.Params("zipCode"))
 	if errGetCities != nil {
 		if strings.Contains(errGetCities.Error(), "no zip code entries found") {
@@ -109,5 +115,17 @@ func (v1 *PublicHandlers) CitiesGET(c *fiber.Ctx) error {
 	}
 	return c.Status(http.StatusOK).JSON(fiber.Map{
 		"cities": cities,
+	})
+}
+
+func (v1 *PublicHandlers) RESTTestGET(c *fiber.Ctx) error {
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"hello": "world",
+	})
+}
+
+func (v1 *PublicHandlers) RESTPlansGET(c *fiber.Ctx) error {
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"hello": "world",
 	})
 }

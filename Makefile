@@ -15,6 +15,7 @@ help: ## Print this message and exit.
 		| column -s ':' -t
 
 install: ## Install required software
+	brew install agrinman/tap/tunnelto
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
 	go install gotest.tools/gotestsum@latest
 	go install github.com/air-verse/air@latest
@@ -54,7 +55,15 @@ start: ## Runs the service
 	sleep 15
 	goose -dir ./app/db mysql $(DBCONNECT) up
 #	export $(grep -v -e '^$' .env | grep -v -e '^#' | xargs -0)
-	air
+	FGONBOARDING_ENVIRONMENT=local FGONBOARDING_SERVER_PORT=443 air
+
+.PHONY: start-tunnel
+start-tunnel: ## Runs the service and opens tunnel
+	docker-compose up --detach
+	sleep 15
+	goose -dir ./app/db mysql $(DBCONNECT) up
+#	export $(grep -v -e '^$' .env | grep -v -e '^#' | xargs -0)
+	FGONBOARDING_ENVIRONMENT=dev FGONBOARDING_SERVER_PORT=8004 air & ssh -R 80:localhost:8004 serveo.net && fg
 
 .PHONY: format
 format: ## Format all the files
