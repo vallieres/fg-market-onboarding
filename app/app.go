@@ -23,7 +23,7 @@ import (
 	"github.com/rollbar/rollbar-go"
 
 	"github.com/vallieres/fg-market-onboarding/handler"
-	customtemplate "github.com/vallieres/fg-market-onboarding/internal/customTemplate"
+	"github.com/vallieres/fg-market-onboarding/internal/customtemplate"
 	"github.com/vallieres/fg-market-onboarding/internal/database"
 	"github.com/vallieres/fg-market-onboarding/routes"
 	"github.com/vallieres/fg-market-onboarding/services"
@@ -110,10 +110,12 @@ func Run() {
 	shopifyStorefrontToken := os.Getenv("FGONBOARDING_SHOPIFY_STOREFRONT_TOKEN")
 
 	zipCodeRepository := repository.NewZipCodeRepository(db)
+	planRepository := repository.NewPlanRepository(db)
 
 	rateLimiterService := services.NewRateLimiterService()
 	customerService := services.NewCustomerService(shopifyAppToken, shopifyStorefrontToken)
 	zipCodeService := services.NewZipCodeService(zipCodeRepository)
+	planService := services.NewPlanService(planRepository, shopifyAppToken, shopifyStorefrontToken)
 
 	app.Use(limiter.New(limiter.Config{
 		Max:                    30, //nolint:mnd
@@ -131,6 +133,7 @@ func Run() {
 		Public: &handler.PublicHandlers{
 			CustomerService: *customerService,
 			ZipCodeService:  *zipCodeService,
+			PlanService:     *planService,
 		},
 		Common:   &handler.CommonHandlers{},
 		PublicFS: publicFS,

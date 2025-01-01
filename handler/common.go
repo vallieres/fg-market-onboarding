@@ -10,6 +10,7 @@ import (
 type Handlers struct {
 	CustomerService services.CustomerService
 	ZipCodeService  services.ZipCodeService
+	PlanService     services.PlanService
 }
 
 type (

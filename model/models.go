@@ -40,3 +40,24 @@ type ZipCodeEntry struct {
 	UpdatedAt time.Time  `json:"updated_at" db:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
 }
+
+type Plan struct {
+	ID                             int64      `json:"id" db:"id"`
+	Name                           string     `json:"name" db:"name"`
+	Status                         string     `json:"status" db:"status"`
+	PetName                        string     `json:"pet_name" db:"pet_name"`
+	PetSpecies                     string     `json:"pet_species" db:"pet_species"`
+	PetBreed                       string     `json:"pet_breed" db:"pet_breed"`
+	PetWeightLbs                   string     `json:"pet_weight_lbs" db:"pet_weight_lbs"`
+	PetActivityLevel               string     `json:"pet_activity_level" db:"pet_activity_level"`
+	DailyTotalCalories             float64    `json:"daily_total_calories" db:"daily_total_calories"`
+	DailyTotalProtein              float64    `json:"daily_total_protein" db:"daily_total_protein"`
+	DailyTotalFat                  float64    `json:"daily_total_fat" db:"daily_total_fat"`
+	DailyTotalCarbohydrates        float64    `json:"daily_total_carbohydrates" db:"daily_total_carbohydrates"`
+	ProteinPercentOfCalories       float64    `json:"protein_percent_of_calories" db:"protein_percent_of_calories"`
+	FatPercentOfCalories           float64    `json:"fat_percent_of_calories" db:"fat_percent_of_calories"`
+	CarbohydratesPercentOfCalories float64    `json:"carbohydrates_percent_of_calories" db:"carbohydrates_percent_of_calories"` //nolint:lll
+	CreatedAt                      time.Time  `json:"created_at" db:"created_at"`
+	UpdatedAt                      time.Time  `json:"updated_at" db:"updated_at"`
+	DeletedAt                      *time.Time `json:"deleted_at" db:"deleted_at"` // Pointer to handle NULL values
+}

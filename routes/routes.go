@@ -86,13 +86,15 @@ func (r *Router) Init() error {
 	// Public Routes
 	r.Engine.Post("/onboard", r.Public.OnboardPOST)
 	r.Engine.Get("/onboard", r.Public.OnboardGET)
-	r.Engine.Get("/plan-result/:planID", r.Public.PlanResultGET)
+	r.Engine.Get("/prepare-plan/:planID", r.Public.PreparePlanGET)
+
 	r.Engine.Get("/reset", r.Public.ResetGET)
 
 	// REST Calls
 	r.Engine.Get("/rest/cities/:zipCode", r.Public.RESTCitiesGET)
 	r.Engine.Get("/rest/test", r.Public.RESTTestGET)
 	r.Engine.Get("/rest/plans/:email", r.Public.RESTPlansGET)
+	r.Engine.Get("/rest/is-plan-ready/:planID", r.Public.RESTIsPlanReadyGET)
 
 	r.Engine.Use(
 		func(c *fiber.Ctx) error {

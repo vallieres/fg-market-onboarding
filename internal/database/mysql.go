@@ -19,8 +19,9 @@ func MySQLConnection() (*sqlx.DB, error) {
 
 	databaseURL := os.Getenv("FGONBOARD_DB_SERVER_URL")
 	databaseURL = strings.ReplaceAll(databaseURL, "\"", "")
+	arguments := "parseTime=true&loc=America%2FMontreal&charset=utf8mb4&collation=utf8mb4_unicode_ci"
 
-	db, err := sqlx.Connect("mysql", databaseURL+"?charset=utf8mb4&collation=utf8mb4_unicode_ci")
+	db, err := sqlx.Connect("mysql", databaseURL+"?"+arguments)
 	if err != nil {
 		return nil, fmt.Errorf("error, not connected to database, %w", err)
 	}
