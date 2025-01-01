@@ -1,6 +1,6 @@
 DEFAULT_GOAL: help
 
-DBCONNECT := "fgonboard:fgonboard@/fgonboard?parseTime=true"
+DBCONNECT := "fgonboard:fgonboard@/fgonboard?parseTime=true&loc=America%2FMontreal&charset=utf8mb4&collation=utf8mb4_unicode_ci"
 
 ifneq (,$(wildcard ./.env))
 	include .env

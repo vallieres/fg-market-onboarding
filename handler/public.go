@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,15 +25,18 @@ func (v1 *PublicHandlers) OnboardGET(c *fiber.Ctx) error {
 	return c.Render("index", fiber.Map{})
 }
 
-func (v1 *PublicHandlers) PlanResultGET(c *fiber.Ctx) error {
-	fmt.Fprintf(c, "%s\n", c.Params("planID"))
+func (v1 *PublicHandlers) PreparePlanGET(c *fiber.Ctx) error {
+	planID := c.Params("planID")
 
-	// TODO Retrieve plan details
+	fmt.Fprintf(c, "%s\n", planID)
+
+	// TODO Retrieve plan.go details
 
 	// TODO Create Cart and generate URL
 
 	// and pass it to the render
-	return c.Render("plan-result", fiber.Map{
+	return c.Render("prepare-plan", fiber.Map{
+		"PlanID":      planID,
 		"PlanDetails": nil,
 		"CheckoutURL": "",
 	})
@@ -69,11 +73,20 @@ func (v1 *PublicHandlers) OnboardPOST(c *fiber.Ctx) error {
 		})
 	}
 
-	domain := os.Getenv("FGONBOARDING_DOMAIN")
-	redirectTo := fmt.Sprintf("https://%s/plan-result/%s", domain, "unique-plan-id")
+	planID, errCreatePlan := v1.PlanService.CreateBasicPlan(ctx, customerDetails)
+	if errCreatePlan != nil {
+		rollbar.Error("Unable to create plan : ", errCreatePlan.Error())
+		return c.Render("index", fiber.Map{
+			"ErrorMessage":    "Unable to Create Plan : " + errCreatePlan.Error(),
+			"CustomerDetails": customerDetails,
+		})
+	}
 
-	return c.Render("plan", fiber.Map{
-		"Message":    "Preparing plan for " + customerDetails.PetName + "...",
+	domain := os.Getenv("FGONBOARDING_DOMAIN")
+	redirectTo := fmt.Sprintf("https://%s/prepare-plan/%d", domain, planID)
+
+	return c.Render("plan.go", fiber.Map{
+		"Message":    "Preparing plan.go for " + customerDetails.PetName + "...",
 		"RedirectTo": redirectTo,
 	})
 }
@@ -127,5 +140,33 @@ func (v1 *PublicHandlers) RESTTestGET(c *fiber.Ctx) error {
 func (v1 *PublicHandlers) RESTPlansGET(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(fiber.Map{
 		"hello": "world",
+	})
+}
+
+func (v1 *PublicHandlers) RESTIsPlanReadyGET(c *fiber.Ctx) error {
+	planID := c.Params("planID")
+	planIDInt, errConv := strconv.Atoi(planID)
+	if errConv != nil {
+		rollbar.Error(fmt.Errorf("error converting planID string to int64: %s, %w", planID, errConv))
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": "error checking if plan is ready",
+		})
+	}
+	isPlanReady, errIsPlanReady := v1.PlanService.IsPlanReady(int64(planIDInt))
+	if errIsPlanReady != nil {
+		if strings.Contains(errIsPlanReady.Error(), "plan is not found") {
+			return c.Status(http.StatusNotFound).JSON(fiber.Map{
+				"is_ready": "false",
+			})
+		}
+		rollbar.Error(fmt.Errorf("error checking if plan is ready: %s, %w", planID, errIsPlanReady))
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": "error checking if plan is ready",
+		})
+	}
+	isPlanReadyStr := strconv.FormatBool(isPlanReady)
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"is_ready": isPlanReadyStr,
 	})
 }
